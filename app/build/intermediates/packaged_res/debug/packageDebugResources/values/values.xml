@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:ns1="http://schemas.android.com/tools">
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="accessibility_service_desc">Scans visible text for scam signals and shows warning overlay.</string>
+    <string name="app_name">Guardian Overlay</string>
+    <string name="open_accessibility_settings">Open Accessibility Settings</string>
+    <string name="open_history">Open Detection History</string>
+    <string name="pick_screenshot">Pick Screenshot and Run OCR</string>
+    <style name="Theme.GuardianOverlay" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor" ns1:targetApi="l">@android:color/transparent</item>
+    </style>
+</resources>

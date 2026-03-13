@@ -1,0 +1,30 @@
+[
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-debug-4:\\drawable_bg_overlay.xml.flat",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\drawable\\bg_overlay.xml"
+    },
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-debug-4:\\layout_activity_history.xml.flat",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\layout\\activity_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-debug-4:\\layout_overlay_warning.xml.flat",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\layout\\overlay_warning.xml"
+    },
+    {
+        "merged": "com.guardian.overlay.app-debug-4:/drawable_bg_result_box.xml.flat",
+        "source": "com.guardian.overlay.app-main-6:/drawable/bg_result_box.xml"
+    },
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-debug-4:\\xml_accessibility_service_config.xml.flat",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\xml\\accessibility_service_config.xml"
+    },
+    {
+        "merged": "com.guardian.overlay.app-debug-4:/layout_activity_main.xml.flat",
+        "source": "com.guardian.overlay.app-main-6:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-debug-4:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\layout\\activity_main.xml"
+    }
+]

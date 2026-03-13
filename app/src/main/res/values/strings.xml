@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Guardian Overlay</string>
+    <string name="accessibility_service_desc">Scans visible text for scam signals and shows warning overlay.</string>
+    <string name="open_accessibility_settings">Open Accessibility Settings</string>
+    <string name="pick_screenshot">Pick Screenshot and Run OCR</string>
+    <string name="open_history">Open Detection History</string>
+</resources>

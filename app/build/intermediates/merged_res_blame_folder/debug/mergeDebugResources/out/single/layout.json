@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.guardian.overlay.app-mergeDebugResources-3:/layout/activity_main.xml",
+        "source": "com.guardian.overlay.app-main-6:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-mergeDebugResources-3:\\layout\\overlay_warning.xml",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\layout\\overlay_warning.xml"
+    },
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-mergeDebugResources-3:\\layout\\activity_history.xml",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\layout\\activity_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-mergeDebugResources-3:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\kaung\\.gradle\\daemon\\9.0.0\\com.guardian.overlay.app-main-6:\\layout\\activity_main.xml"
+    }
+]

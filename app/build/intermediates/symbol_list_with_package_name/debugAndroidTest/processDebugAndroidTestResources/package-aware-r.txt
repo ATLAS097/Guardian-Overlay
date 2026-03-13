@@ -1,0 +1,3 @@
+com.guardian.overlay.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme

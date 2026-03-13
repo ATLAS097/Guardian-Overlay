@@ -1,0 +1,33 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color white
+drawable bg_overlay
+drawable bg_result_box
+id guideText
+id historyText
+id openAccessibilityBtn
+id openHistoryBtn
+id overlayDismiss
+id overlayReasons
+id overlayScore
+id overlayTitle
+id pickScreenshotBtn
+id reasonsValue
+id resultScroll
+id resultTitle
+id scoreValue
+id snippetValue
+id sourceValue
+id titleText
+id verdictValue
+layout activity_history
+layout activity_main
+layout overlay_warning
+string accessibility_service_desc
+string app_name
+string open_accessibility_settings
+string open_history
+string pick_screenshot
+style Theme.GuardianOverlay
+xml accessibility_service_config
