@@ -1,81 +1,74 @@
 package com.guardian.overlay
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.guardian.overlay.data.DetectionHistoryStore
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.guardian.overlay.accessibility.AccessibilityState
 import com.guardian.overlay.databinding.ActivityMainBinding
-import com.guardian.overlay.detection.DetectorProvider
-import com.guardian.overlay.ocr.OcrProcessor
+import com.guardian.overlay.service.GuardianAccessibilityService
+import com.guardian.overlay.settings.AppSettingsStore
+import com.guardian.overlay.settings.ThemeController
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val detector by lazy { DetectorProvider.get(this) }
-    private val ocrProcessor = OcrProcessor()
-    private lateinit var historyStore: DetectionHistoryStore
-
-    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        if (uri == null) {
-            binding.snippetValue.text = "No screenshot selected."
-            return@registerForActivityResult
-        }
-
-        binding.snippetValue.text = "Running OCR..."
-        ocrProcessor.extractTextFromImageUri(
-            context = this,
-            imageUri = uri,
-            onSuccess = { text ->
-                val result = detector.detect(text, "screenshot_ocr")
-                historyStore.saveResult(result)
-                renderResult(result.source, result.isScam, result.prettyScore(), result.reasons, result.snippet)
-            },
-            onError = { ex ->
-                binding.snippetValue.text = "OCR failed: ${ex.message}"
-            }
-        )
-    }
+    private lateinit var settingsStore: AppSettingsStore
+    private lateinit var navController: androidx.navigation.NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeController.apply(this)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        historyStore = DetectionHistoryStore(this)
+        settingsStore = AppSettingsStore(this)
 
-        binding.openAccessibilityBtn.setOnClickListener {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        val navHost = supportFragmentManager.findFragmentById(R.id.navHostContainer) as NavHostFragment
+        navController = navHost.navController
+        binding.bottomNav.setupWithNavController(navController)
+
+        binding.assistiveLauncherBtn.setOnClickListener {
+            openAssistiveBubble()
         }
 
-        binding.pickScreenshotBtn.setOnClickListener {
-            pickImage.launch("image/*")
-        }
-
-        binding.openHistoryBtn.setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
-        }
-
-        renderResult(
-            source = "-",
-            isScam = false,
-            score = "-",
-            reasons = listOf("No scan yet."),
-            snippet = "Ready. Enable accessibility and test screenshot OCR."
-        )
+        handleIntent(intent)
     }
 
-    private fun renderResult(
-        source: String,
-        isScam: Boolean,
-        score: String,
-        reasons: List<String>,
-        snippet: String
-    ) {
-        binding.sourceValue.text = source
-        binding.verdictValue.text = if (isScam) "SCAM" else "POTENTIAL / LOW RISK"
-        binding.scoreValue.text = score
-        binding.reasonsValue.text = reasons.joinToString(separator = "\n- ", prefix = "- ")
-        binding.snippetValue.text = snippet
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun openAssistiveBubble() {
+        if (!AccessibilityState.isGuardianServiceEnabled(this)) {
+            Toast.makeText(this, getString(R.string.accessibility_required_for_assistive), Toast.LENGTH_LONG).show()
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            return
+        }
+
+        settingsStore.setAssistiveTouchEnabled(true)
+        sendBroadcast(Intent(GuardianAccessibilityService.ACTION_SHOW_ASSISTIVE_BUBBLE))
+        Toast.makeText(this, getString(R.string.assistive_bubble_opened), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val tab = intent?.getStringExtra(EXTRA_OPEN_TAB) ?: return
+        when (tab) {
+            TAB_QR -> binding.bottomNav.selectedItemId = R.id.qrScannerFragment
+            TAB_GALLERY -> binding.bottomNav.selectedItemId = R.id.galleryFragment
+            TAB_HOME -> binding.bottomNav.selectedItemId = R.id.homeFragment
+            TAB_SETTINGS -> binding.bottomNav.selectedItemId = R.id.settingsFragment
+        }
+    }
+
+    companion object {
+        const val EXTRA_OPEN_TAB = "open_tab"
+        const val TAB_HOME = "home"
+        const val TAB_QR = "qr"
+        const val TAB_GALLERY = "gallery"
+        const val TAB_SETTINGS = "settings"
     }
 }

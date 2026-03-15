@@ -4,14 +4,14 @@ package com.guardian.overlay.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.guardian.overlay.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -22,60 +22,21 @@ public final class ActivityMainBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final TextView guideText;
+  public final MaterialButton assistiveLauncherBtn;
 
   @NonNull
-  public final Button openAccessibilityBtn;
+  public final BottomNavigationView bottomNav;
 
   @NonNull
-  public final Button openHistoryBtn;
+  public final FragmentContainerView navHostContainer;
 
-  @NonNull
-  public final Button pickScreenshotBtn;
-
-  @NonNull
-  public final TextView reasonsValue;
-
-  @NonNull
-  public final ScrollView resultScroll;
-
-  @NonNull
-  public final TextView resultTitle;
-
-  @NonNull
-  public final TextView scoreValue;
-
-  @NonNull
-  public final TextView snippetValue;
-
-  @NonNull
-  public final TextView sourceValue;
-
-  @NonNull
-  public final TextView titleText;
-
-  @NonNull
-  public final TextView verdictValue;
-
-  private ActivityMainBinding(@NonNull ConstraintLayout rootView, @NonNull TextView guideText,
-      @NonNull Button openAccessibilityBtn, @NonNull Button openHistoryBtn,
-      @NonNull Button pickScreenshotBtn, @NonNull TextView reasonsValue,
-      @NonNull ScrollView resultScroll, @NonNull TextView resultTitle, @NonNull TextView scoreValue,
-      @NonNull TextView snippetValue, @NonNull TextView sourceValue, @NonNull TextView titleText,
-      @NonNull TextView verdictValue) {
+  private ActivityMainBinding(@NonNull ConstraintLayout rootView,
+      @NonNull MaterialButton assistiveLauncherBtn, @NonNull BottomNavigationView bottomNav,
+      @NonNull FragmentContainerView navHostContainer) {
     this.rootView = rootView;
-    this.guideText = guideText;
-    this.openAccessibilityBtn = openAccessibilityBtn;
-    this.openHistoryBtn = openHistoryBtn;
-    this.pickScreenshotBtn = pickScreenshotBtn;
-    this.reasonsValue = reasonsValue;
-    this.resultScroll = resultScroll;
-    this.resultTitle = resultTitle;
-    this.scoreValue = scoreValue;
-    this.snippetValue = snippetValue;
-    this.sourceValue = sourceValue;
-    this.titleText = titleText;
-    this.verdictValue = verdictValue;
+    this.assistiveLauncherBtn = assistiveLauncherBtn;
+    this.bottomNav = bottomNav;
+    this.navHostContainer = navHostContainer;
   }
 
   @Override
@@ -105,81 +66,26 @@ public final class ActivityMainBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.guideText;
-      TextView guideText = ViewBindings.findChildViewById(rootView, id);
-      if (guideText == null) {
+      id = R.id.assistiveLauncherBtn;
+      MaterialButton assistiveLauncherBtn = ViewBindings.findChildViewById(rootView, id);
+      if (assistiveLauncherBtn == null) {
         break missingId;
       }
 
-      id = R.id.openAccessibilityBtn;
-      Button openAccessibilityBtn = ViewBindings.findChildViewById(rootView, id);
-      if (openAccessibilityBtn == null) {
+      id = R.id.bottomNav;
+      BottomNavigationView bottomNav = ViewBindings.findChildViewById(rootView, id);
+      if (bottomNav == null) {
         break missingId;
       }
 
-      id = R.id.openHistoryBtn;
-      Button openHistoryBtn = ViewBindings.findChildViewById(rootView, id);
-      if (openHistoryBtn == null) {
+      id = R.id.navHostContainer;
+      FragmentContainerView navHostContainer = ViewBindings.findChildViewById(rootView, id);
+      if (navHostContainer == null) {
         break missingId;
       }
 
-      id = R.id.pickScreenshotBtn;
-      Button pickScreenshotBtn = ViewBindings.findChildViewById(rootView, id);
-      if (pickScreenshotBtn == null) {
-        break missingId;
-      }
-
-      id = R.id.reasonsValue;
-      TextView reasonsValue = ViewBindings.findChildViewById(rootView, id);
-      if (reasonsValue == null) {
-        break missingId;
-      }
-
-      id = R.id.resultScroll;
-      ScrollView resultScroll = ViewBindings.findChildViewById(rootView, id);
-      if (resultScroll == null) {
-        break missingId;
-      }
-
-      id = R.id.resultTitle;
-      TextView resultTitle = ViewBindings.findChildViewById(rootView, id);
-      if (resultTitle == null) {
-        break missingId;
-      }
-
-      id = R.id.scoreValue;
-      TextView scoreValue = ViewBindings.findChildViewById(rootView, id);
-      if (scoreValue == null) {
-        break missingId;
-      }
-
-      id = R.id.snippetValue;
-      TextView snippetValue = ViewBindings.findChildViewById(rootView, id);
-      if (snippetValue == null) {
-        break missingId;
-      }
-
-      id = R.id.sourceValue;
-      TextView sourceValue = ViewBindings.findChildViewById(rootView, id);
-      if (sourceValue == null) {
-        break missingId;
-      }
-
-      id = R.id.titleText;
-      TextView titleText = ViewBindings.findChildViewById(rootView, id);
-      if (titleText == null) {
-        break missingId;
-      }
-
-      id = R.id.verdictValue;
-      TextView verdictValue = ViewBindings.findChildViewById(rootView, id);
-      if (verdictValue == null) {
-        break missingId;
-      }
-
-      return new ActivityMainBinding((ConstraintLayout) rootView, guideText, openAccessibilityBtn,
-          openHistoryBtn, pickScreenshotBtn, reasonsValue, resultScroll, resultTitle, scoreValue,
-          snippetValue, sourceValue, titleText, verdictValue);
+      return new ActivityMainBinding((ConstraintLayout) rootView, assistiveLauncherBtn, bottomNav,
+          navHostContainer);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

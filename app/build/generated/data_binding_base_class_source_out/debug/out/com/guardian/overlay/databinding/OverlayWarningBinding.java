@@ -24,6 +24,9 @@ public final class OverlayWarningBinding implements ViewBinding {
   public final Button overlayDismiss;
 
   @NonNull
+  public final TextView overlayHighlightSummary;
+
+  @NonNull
   public final TextView overlayReasons;
 
   @NonNull
@@ -33,10 +36,11 @@ public final class OverlayWarningBinding implements ViewBinding {
   public final TextView overlayTitle;
 
   private OverlayWarningBinding(@NonNull LinearLayout rootView, @NonNull Button overlayDismiss,
-      @NonNull TextView overlayReasons, @NonNull TextView overlayScore,
-      @NonNull TextView overlayTitle) {
+      @NonNull TextView overlayHighlightSummary, @NonNull TextView overlayReasons,
+      @NonNull TextView overlayScore, @NonNull TextView overlayTitle) {
     this.rootView = rootView;
     this.overlayDismiss = overlayDismiss;
+    this.overlayHighlightSummary = overlayHighlightSummary;
     this.overlayReasons = overlayReasons;
     this.overlayScore = overlayScore;
     this.overlayTitle = overlayTitle;
@@ -75,6 +79,12 @@ public final class OverlayWarningBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.overlayHighlightSummary;
+      TextView overlayHighlightSummary = ViewBindings.findChildViewById(rootView, id);
+      if (overlayHighlightSummary == null) {
+        break missingId;
+      }
+
       id = R.id.overlayReasons;
       TextView overlayReasons = ViewBindings.findChildViewById(rootView, id);
       if (overlayReasons == null) {
@@ -93,8 +103,8 @@ public final class OverlayWarningBinding implements ViewBinding {
         break missingId;
       }
 
-      return new OverlayWarningBinding((LinearLayout) rootView, overlayDismiss, overlayReasons,
-          overlayScore, overlayTitle);
+      return new OverlayWarningBinding((LinearLayout) rootView, overlayDismiss,
+          overlayHighlightSummary, overlayReasons, overlayScore, overlayTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

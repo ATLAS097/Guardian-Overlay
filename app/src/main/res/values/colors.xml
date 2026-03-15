@@ -1,4 +1,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="nav_item_color">#111827</color>
+    <color name="result_box_bg">#F8FAFC</color>
+    <color name="result_box_stroke">#E2E8F0</color>
+    <color name="overlay_bg">#FFF7ED</color>
+    <color name="overlay_stroke">#FDBA74</color>
+    <color name="overlay_title_color">#B91C1C</color>
+    <color name="gallery_thumb_bg">#10000000</color>
+    <color name="qr_frame_stroke">#80FFFFFF</color>
+    <color name="highlight_box_stroke">#DC2626</color>
+    <color name="highlight_box_fill">#30DC2626</color>
 </resources>

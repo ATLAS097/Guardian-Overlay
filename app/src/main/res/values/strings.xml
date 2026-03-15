@@ -1,7 +1,78 @@
 <resources>
     <string name="app_name">Guardian Overlay</string>
     <string name="accessibility_service_desc">Scans visible text for scam signals and shows warning overlay.</string>
+
+    <string name="tab_home">Home</string>
+    <string name="tab_qr">QR Scanner</string>
+    <string name="tab_gallery">Gallery</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="home_title">Defender Overlay</string>
+    <string name="home_intro">Scams keep changing, but warning signs remain similar. Use this guide before sharing money, OTP, passwords, or personal details.</string>
+    <string name="home_prevention_title">How To Avoid Scams</string>
+    <string name="home_prevention_body">1) Slow down when messages pressure you to act immediately.\n\n2) Verify identity using official channels, never links sent in chats.\n\n3) Check links carefully for misspellings, unusual domains, and shorteners.\n\n4) Never share OTP, PIN, card CVV, or full bank credentials.\n\n5) Treat "refund", "prize", and "account suspension" messages as high risk until verified.\n\n6) When in doubt, stop and ask a trusted person before continuing.</string>
+    <string name="home_status_title">Protection Status</string>
+    <string name="home_status_template">Detection: %1$s\nOnline URL check: %2$s\nAssistive touch: %3$s</string>
+    <string name="open_assistive_touch">Open Assistive Bubble</string>
+    <string name="assistive_overlay_title">Assistive Touch Actions</string>
+    <string name="assistive_open_qr">Open QR Scanner</string>
+    <string name="assistive_open_gallery">Open Gallery Scanner</string>
     <string name="open_accessibility_settings">Open Accessibility Settings</string>
-    <string name="pick_screenshot">Pick Screenshot and Run OCR</string>
-    <string name="open_history">Open Detection History</string>
+
+    <string name="status_enabled">Enabled</string>
+    <string name="status_disabled">Disabled</string>
+    <string name="ok">OK</string>
+    <string name="unknown_error">Unknown error</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Control privacy, theme, and detection behavior.</string>
+    <string name="settings_detection_label">Detection Controls</string>
+    <string name="settings_detection_toggle">Enable live scam detection</string>
+    <string name="settings_assistive_touch_toggle">Enable system-wide assistive bubble</string>
+    <string name="settings_online_lookup_toggle">Enable optional online URL reputation check</string>
+    <string name="settings_theme_label">Theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="save_settings">Save Settings</string>
+
+    <string name="qr_title">QR Scam Scanner</string>
+    <string name="qr_camera_hint">Align the QR code inside the frame. Scan starts automatically.</string>
+    <string name="camera_permission_required">Camera permission is required to scan QR codes.</string>
+    <string name="camera_start_failed">Unable to start camera preview.</string>
+    <string name="qr_result_message">Payload:\n%1$s\n\nScore: %2$s\nReasons:\n%3$s\n\nRecommended steps:\n%4$s</string>
+
+    <string name="gallery_title">Scan From Gallery</string>
+    <string name="gallery_loading">Loading photos...</string>
+    <string name="gallery_empty">No images were found in your gallery.</string>
+    <string name="gallery_permission_required">Gallery permission is required to browse photos in-app.</string>
+    <string name="gallery_grant_permission">Grant Gallery Access</string>
+    <string name="gallery_tap_to_scan">Tap any photo to analyze scam signals.</string>
+    <string name="gallery_result_message">Score: %1$s\n\nReasons:\n%2$s\n\nRecommended steps:\n%3$s</string>
+    <string name="gallery_highlighted_regions">Highlighted suspicious regions: %1$d</string>
+    <string name="gallery_no_highlighted_regions">No clear suspicious text regions were highlighted.</string>
+    <string name="gallery_image_content_desc">Gallery image</string>
+    <string name="live_overlay_box_placed">Most suspicious area is highlighted on screen.</string>
+    <string name="live_overlay_no_highlights">No exact suspicious area was located on-screen.</string>
+    <string name="assistive_bubble_content_desc">Assistive bubble</string>
+    <string name="assistive_remove_target_desc">Remove assistive bubble</string>
+    <string name="assistive_bubble_opened">Assistive bubble enabled.</string>
+    <string name="accessibility_required_for_assistive">Enable Accessibility Service to use assistive bubble.</string>
+    <string name="accessibility_required_title">Accessibility permission needed</string>
+    <string name="accessibility_required_message">To enable live scam detection or assistive bubble, turn on Guardian Accessibility Service.</string>
+    <string name="cancel">Cancel</string>
+    <string name="assistive_panel_title">Assistive Quick Actions</string>
+    <string name="assistive_panel_subtitle">Fast controls while staying on your current screen.</string>
+    <string name="assistive_toggle_detection_on">Enable live detection</string>
+    <string name="assistive_toggle_detection_off">Disable live detection</string>
+    <string name="assistive_check_current_screen">Scan current screen now</string>
+    <string name="assistive_open_app">Open Guardian app</string>
+
+    <string name="running_ocr">Running OCR...</string>
+    <string name="ocr_failed">OCR failed: %1$s</string>
+    <string name="prevention_steps_risky">1) Stop interacting with this content\n2) Verify through official channels\n3) Do not share OTP, PIN, or payment details\n4) Report sender and keep evidence</string>
+    <string name="prevention_steps_safe">1) Keep verifying sender identity\n2) Check domain/app spelling before action\n3) Never share OTP or full card details</string>
+
+    <string name="verdict_scam">SCAM</string>
+    <string name="verdict_low_risk">POTENTIAL / LOW RISK</string>
 </resources>

@@ -1,0 +1,1 @@
+C:\Coding\Projects\Guardian-Overlay\app\build\intermediates\compiled_navigation_res\debug\compileDebugNavigationResources\navigation_nav_graph.xml.flat 
