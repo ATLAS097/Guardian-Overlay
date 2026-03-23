@@ -1,53 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="8dp">
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
-    <FrameLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/galleryShellCard"
         android:layout_width="match_parent"
-        android:layout_height="420dp">
-
-        <ImageView
-            android:id="@+id/resultImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/gallery_image_content_desc" />
-
-        <com.guardian.overlay.ui.gallery.ScamHighlightOverlayView
-            android:id="@+id/highlightOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_marginTop="8dp"
-        android:fillViewport="true">
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@color/gallery_dialog_shell_bg"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="2dp"
+        app:strokeColor="@color/gallery_dialog_shell_stroke"
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/verdictPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="999dp"
+                app:strokeWidth="1dp">
+
+                <TextView
+                    android:id="@+id/verdictBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                    android:textStyle="bold" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                android:layout_weight="1"
+                android:background="@color/gallery_image_surface_bg">
+
+                <ImageView
+                    android:id="@+id/resultImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="false"
+                    android:contentDescription="@string/gallery_image_content_desc"
+                    android:scaleType="fitCenter" />
+
+                <com.guardian.overlay.ui.gallery.ScamHighlightOverlayView
+                    android:id="@+id/highlightOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/gallery_info_card_bg"
+                    app:cardCornerRadius="14dp"
+                    app:strokeColor="@color/gallery_info_card_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="12dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/gallery_risk_score_label"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+
+                        <TextView
+                            android:id="@+id/riskScoreValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:cardBackgroundColor="@color/gallery_info_card_bg"
+                    app:cardCornerRadius="14dp"
+                    app:strokeColor="@color/gallery_info_card_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="12dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/gallery_scam_type_label"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+
+                        <TextView
+                            android:id="@+id/scamTypeValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:cardBackgroundColor="@color/gallery_info_card_bg"
+                    app:cardCornerRadius="14dp"
+                    app:strokeColor="@color/gallery_info_card_stroke"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="12dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/gallery_source_channel_label"
+                            android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+
+                        <TextView
+                            android:id="@+id/sourceChannelValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/highlightSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
+                android:layout_marginTop="10dp"
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/resultMessage"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/whyRiskyButton"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:text="@string/gallery_view_why_risky"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gallery_action_primary_text"
+                    app:backgroundTint="@color/gallery_action_primary_bg"
+                    app:cornerRadius="16dp"
+                    app:iconGravity="textStart"
+                    app:rippleColor="@color/gallery_action_primary_ripple" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/nextStepsButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:minHeight="48dp"
+                    android:text="@string/gallery_view_next_steps"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gallery_action_secondary_text"
+                    app:backgroundTint="@color/gallery_action_secondary_bg"
+                    app:cornerRadius="16dp"
+                    app:rippleColor="@color/gallery_action_secondary_ripple"
+                    app:strokeColor="@color/gallery_action_secondary_stroke"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
-        </LinearLayout>
-    </ScrollView>
+                android:gravity="end"
+                android:orientation="horizontal">
 
-</LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/shareResultButton"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gallery_share_result"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gallery_action_secondary_text" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/closeResultButton"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/ok"
+                    android:textAllCaps="false"
+                    android:textColor="@color/gallery_action_secondary_text" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

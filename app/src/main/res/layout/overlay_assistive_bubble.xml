@@ -12,6 +12,6 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/assistive_bubble_content_desc"
         android:src="@android:drawable/ic_menu_more"
-        android:tint="#F2E9FF" />
+        android:tint="@color/assistive_bubble_icon_tint" />
 
 </FrameLayout>

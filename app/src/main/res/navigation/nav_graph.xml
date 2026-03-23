@@ -20,6 +20,11 @@
         android:label="@string/tab_gallery" />
 
     <fragment
+        android:id="@+id/trustedContactFragment"
+        android:name="com.guardian.overlay.ui.trusted.TrustedContactFragment"
+        android:label="@string/tab_trusted_contact" />
+
+    <fragment
         android:id="@+id/settingsFragment"
         android:name="com.guardian.overlay.ui.settings.SettingsFragment"
         android:label="@string/tab_settings" />

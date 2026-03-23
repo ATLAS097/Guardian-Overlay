@@ -12,4 +12,55 @@
     <color name="qr_frame_stroke">#80FFFFFF</color>
     <color name="highlight_box_stroke">#DC2626</color>
     <color name="highlight_box_fill">#30DC2626</color>
+    <color name="highlight_box_safe_stroke">#B45309</color>
+    <color name="highlight_box_safe_fill">#33F59E0B</color>
+    <color name="gallery_verdict_scam_bg">#FFF1F2</color>
+    <color name="gallery_verdict_scam_stroke">#FCA5A5</color>
+    <color name="gallery_verdict_scam_text">#B91C1C</color>
+    <color name="gallery_verdict_safe_bg">#F0FDF4</color>
+    <color name="gallery_verdict_safe_stroke">#86EFAC</color>
+    <color name="gallery_verdict_safe_text">#166534</color>
+    <color name="gallery_dialog_shell_bg">#F7F2FF</color>
+    <color name="gallery_dialog_shell_stroke">#DCCEFF</color>
+    <color name="gallery_image_surface_bg">#FFFFFF</color>
+    <color name="gallery_info_card_bg">#FFFFFF</color>
+    <color name="gallery_info_card_stroke">#E8DDFF</color>
+    <color name="gallery_action_primary_bg">#5F3BC1</color>
+    <color name="gallery_action_primary_text">#FCF9FF</color>
+    <color name="gallery_action_primary_ripple">#33FFFFFF</color>
+    <color name="gallery_action_secondary_bg">#EEE6FF</color>
+    <color name="gallery_action_secondary_text">#4F27A8</color>
+    <color name="gallery_action_secondary_stroke">#CDB7FF</color>
+    <color name="gallery_action_secondary_ripple">#22CDB7FF</color>
+
+    <color name="assistive_panel_bg_start">#F6F0FF</color>
+    <color name="assistive_panel_bg_end">#EBDDFF</color>
+    <color name="assistive_panel_stroke">#CDB7FF</color>
+    <color name="assistive_panel_text_primary">#4F27A8</color>
+    <color name="assistive_panel_text_secondary">#6545B9</color>
+    <color name="assistive_action_bg">#5F3BC1</color>
+    <color name="assistive_action_bg_pressed">#7C5AD5</color>
+    <color name="assistive_action_stroke">#D8C8FF</color>
+    <color name="assistive_action_text">#FCF9FF</color>
+
+    <color name="assistive_bubble_start">#7A43E0</color>
+    <color name="assistive_bubble_end">#5329A8</color>
+    <color name="assistive_bubble_stroke">#AADBCBFF</color>
+    <color name="assistive_bubble_icon_tint">#F7F0FF</color>
+
+    <color name="assistive_remove_target_start">#AB3CC8</color>
+    <color name="assistive_remove_target_end">#7A2F9A</color>
+    <color name="assistive_remove_target_stroke">#B5FFE6F6</color>
+    <color name="assistive_remove_icon_tint">#FFFFFF</color>
+
+    <color name="assistive_detection_on_text">#14532D</color>
+    <color name="assistive_detection_on_chip">#C9F7D8</color>
+    <color name="assistive_detection_off_text">#7F1D1D</color>
+    <color name="assistive_detection_off_chip">#FFD5D5</color>
+
+    <color name="home_hero_start">#F7F4FF</color>
+    <color name="home_hero_end">#EDE6FF</color>
+    <color name="home_hero_stroke">#D8C8FF</color>
+    <color name="home_card_bg">#FFFFFF</color>
+    <color name="home_card_stroke">#E8DDFF</color>
 </resources>

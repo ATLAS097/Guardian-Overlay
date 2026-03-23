@@ -1,133 +1,300 @@
-# Guardian Overlay Prototype (Offline Scam Checker)
+# Guardian Overlay
 
-This prototype is a real Android app that does the following:
-- Reads visible on-screen text using Accessibility Service.
-- Runs a local fake mini TFLite-compatible detector (keyword phrase-pack scoring).
-- Shows an on-screen warning overlay when scam risk is high.
-- Supports screenshot OCR fallback by selecting an image from the phone.
-- Stores last 20 detection results locally and shows them in a History screen.
-- Works offline for detection logic.
+Guardian Overlay is an Android app that helps users detect likely scam content on-screen, explain why it is risky, and offer quick protective actions.
 
-## 1) Install Required Software
+The app is built for on-device operation first: OCR, rule scoring, overlays, and trusted-contact actions all run locally.
 
-1. Install Android Studio (latest stable) from the official Android developer website.
-2. Open Android Studio and finish first-time setup.
-3. Install SDK components when prompted:
-   - Android SDK Platform 34
-   - Android SDK Build-Tools
-   - Android Emulator (optional)
-4. On Windows, also install USB driver for your Android phone (OEM driver) if needed.
+## Part A - Quick User and Setup Guide
 
-## 2) Open This Project in Android Studio
+### What The App Does
 
-1. Open Android Studio.
-2. Click **Open**.
-3. Select this folder: `Guardian-Overlay`.
-4. Wait for indexing and Gradle sync.
+- Detects suspicious scam signals from visible screen text (live mode).
+- Scans QR payloads and gallery images for scam patterns.
+- Highlights suspicious regions to show where the risk appears.
+- Provides an assistive floating bubble with fast actions.
+- Offers trusted-contact escalation when risky content is detected.
 
-If Android Studio asks to create missing Gradle wrapper files, approve it.
+### Main Tabs
 
-## 3) Set Up Phone for Real Device Testing
+1. Home
+2. QR Scanner
+3. Gallery
+4. Trusted Contact
+5. Settings
 
-1. On your Android phone:
-   - Open **Settings -> About phone**
-   - Tap **Build number** 7 times to enable Developer Options
-2. Go to **Settings -> Developer options**:
-   - Turn on **USB debugging**
-3. Connect phone to PC with USB cable.
-4. Accept the debugging authorization popup on phone.
+### Device and Platform Requirements
 
-## 4) Build and Run the App
+- Android minSdk: 26
+- compileSdk/targetSdk: 34
+- Accessibility Service must be enabled for live detection and assistive bubble features.
 
-1. In Android Studio top bar, choose the `app` run configuration.
-2. Select your connected phone as deployment target.
-3. Click Run (green triangle).
-4. Wait until app is installed and launched.
+### Install and Run (Developer)
 
-## 5) First-Time In-App Setup
+```powershell
+.\gradlew.bat :app:assembleDebug --no-daemon
+```
 
-1. In the app, press **Open Accessibility Settings**.
-2. Find **Guardian Accessibility** service.
-3. Enable it and confirm warning dialogs.
-4. Return to app.
+Then install `app/build/outputs/apk/debug/app-debug.apk` on device/emulator.
 
-Now the service monitors visible text from active screens.
+### First-Time App Setup
 
-## 6) How to Test the Prototype
+1. Open the app.
+2. Go to Settings and enable live detection.
+3. When prompted, enable Guardian Accessibility Service in system Accessibility settings.
+4. Optional: enable Assistive Bubble in Settings.
+5. Open Trusted Contact tab and configure number + preferred action mode.
 
-### A. Accessibility Overlay Test
-1. Keep Guardian app installed and Accessibility service enabled.
-2. Open a chat or SMS screen containing scam-like text, for example:
-   - "URGENT your bank account will be suspended. Click http://... now"
-3. The service scans visible text and if high-risk, a warning overlay appears.
+### Permissions Overview
 
-### B. Screenshot OCR Fallback Test
-1. In Guardian app, tap **Pick Screenshot and Run OCR**.
-2. Select a screenshot image containing message text.
-3. App runs on-device OCR and shows:
-   - Verdict (SCAM / NOT SCAM)
-   - Risk score
-   - Reason tags
-   - Text snippet
+- Accessibility Service: required for live on-screen detection and assistive overlay control.
+- Camera: required for QR camera scanning.
+- Media read permission: required for gallery scan flow.
+  - Android 13+: `READ_MEDIA_IMAGES`
+  - Older Android: `READ_EXTERNAL_STORAGE`
 
-## 7) Important Prototype Notes
+### How To Use Core Features
 
-- This version uses a fake mini TFLite-compatible detector (prototype). It mimics model I/O flow and can be swapped with real TFLite later.
-- No cloud inference is used.
-- Screenshot OCR is user-selected image fallback in this prototype.
-- You can replace detector later with TFLite model while keeping same app structure.
+#### Live Detection
 
-## 8) Phrase Pack Customization (English, Singlish, Bahasa slang, Taglish)
+- Enable in Settings.
+- App observes visible text on screen and shows warning overlay when risk threshold is met.
 
-Edit this file to add or tune scam phrases and weights:
-- `app/src/main/assets/risk_phrases.json`
+#### QR Scanner
 
-How it works:
-1. Each rule has `reason`, `weight`, and `keywords`.
-2. If extracted text contains a keyword, detector adds the rule weight.
-3. If final score exceeds threshold, verdict is SCAM.
+- Use camera live scan or manual image upload path.
+- Risk score + reasons + recommended steps are shown.
 
-You can test quickly by adding a unique phrase and using it in a screenshot.
+#### Gallery Scanner
 
-## 9) Project Structure
+- Tap image thumbnail to scan.
+- Result dialog shows verdict, risk score, scam type/channel summary, highlighted regions, reasons, and recommended steps.
 
-- `app/src/main/kotlin/com/guardian/overlay/MainActivity.kt`
-- `app/src/main/kotlin/com/guardian/overlay/HistoryActivity.kt`
-- `app/src/main/kotlin/com/guardian/overlay/service/GuardianAccessibilityService.kt`
-- `app/src/main/kotlin/com/guardian/overlay/overlay/OverlayManager.kt`
-- `app/src/main/kotlin/com/guardian/overlay/ocr/OcrProcessor.kt`
+#### Trusted Contact
+
+- Configure in Trusted Contact tab.
+- During risky alerts, use CTA button to contact via selected mode:
+  - Chooser
+  - SMS
+  - Call
+  - Share
+
+### Quick Troubleshooting
+
+- No live warnings appear: ensure Accessibility Service is enabled and detection toggle is ON.
+- Gallery is empty: grant media permission.
+- Trusted contact action missing: ensure trusted contact is enabled and valid phone number is set.
+- Build shows Kotlin daemon warnings: Gradle fallback compilation may still complete successfully.
+
+---
+
+## Part B - Detailed Technical Manual
+
+### 1. Technical Stack
+
+- Language: Kotlin
+- Build system: Gradle (Kotlin DSL)
+- UI: Android Views + Material Components
+- Navigation: Fragment + Navigation Component + BottomNavigationView
+- OCR: ML Kit Text Recognition
+- QR: ML Kit Barcode Scanning + CameraX
+- Detection: rule-based local detector (`FakeMiniTfliteDetector`)
+
+Key dependencies are defined in `app/build.gradle.kts`.
+
+### 2. High-Level Architecture
+
+Core runtime layers:
+
+- Service orchestration: `GuardianAccessibilityService`
+- Overlay rendering and interactions: `OverlayManager`
+- OCR extraction: `OcrProcessor`
+- Detection logic: `ScamDetector` interface via detector provider
+- Rule pack loading: `PhrasePackLoader` from `app/src/main/assets/risk_phrases.json`
+
+Primary flow:
+
+1. Source text captured (screenshot OCR or accessibility node text).
+2. Text normalized and scored by detector rules.
+3. Suspicious regions generated by highlighter.
+4. Overlay/dialog rendered with risk summary and mitigation actions.
+
+### 3. Navigation and UI Structure
+
+- `MainActivity` hosts NavController and bottom navigation.
+- Fragments:
+  - `HomeFragment`
+  - `QrScannerFragment`
+  - `GalleryFragment`
+  - `TrustedContactFragment`
+  - `SettingsFragment`
+
+Navigation resources:
+
+- `app/src/main/res/menu/bottom_nav_menu.xml`
+- `app/src/main/res/navigation/nav_graph.xml`
+
+### 4. Detection Pipeline Details
+
+Detector implementation file:
+
 - `app/src/main/kotlin/com/guardian/overlay/detection/FakeMiniTfliteDetector.kt`
-- `app/src/main/kotlin/com/guardian/overlay/detection/DetectorProvider.kt`
-- `app/src/main/kotlin/com/guardian/overlay/data/DetectionHistoryStore.kt`
-- `app/src/main/kotlin/com/guardian/overlay/processing/TextNormalizer.kt`
-- `app/src/main/res/layout/activity_main.xml`
-- `app/src/main/res/layout/activity_history.xml`
-- `app/src/main/res/layout/overlay_warning.xml`
-- `app/src/main/AndroidManifest.xml`
+
+Current behavior:
+
+- Text is normalized.
+- Keyword rules add weighted risk contributions.
+- Result includes:
+  - `isScam`
+  - `score`
+  - `reasons`
+  - `source`
+  - `snippet`
+  - inferred `scamType`
+  - inferred `sourceChannel`
+
+Rule source:
+
 - `app/src/main/assets/risk_phrases.json`
 
-## 10) Common Issues and Fixes
+### 5. OCR and Highlighting Details
 
-### App runs but no overlay appears
-- Confirm Accessibility service is enabled.
-- Ensure tested screen has enough text content.
-- Use obvious scam phrases to trigger threshold.
+OCR extraction:
 
-### History screen is empty
-- Run at least one screenshot OCR scan or let accessibility scan a screen.
-- Then tap **Open Detection History**.
+- `OcrProcessor` extracts full text and line boxes.
+- Each line may carry block bounds for contextual highlight expansion.
 
-### OCR returns empty text
-- Use clear screenshot with readable text.
-- Avoid blurred screenshots.
+Highlighting:
 
-### Build fails on first import
-- Let Android Studio finish Gradle sync and dependency downloads.
-- Update SDK Platform and Build Tools from SDK Manager.
+- `RiskTextHighlighter.findSuspiciousBoxes(...)` matches risk keywords.
+- Regions are expanded and merged into contextual boxes.
 
-## 11) Next Upgrade (After Prototype)
+Rendering:
 
-1. Replace fake detector internals in `FakeMiniTfliteDetector` with real TFLite `Interpreter.run`.
-2. Add confidence calibration and false-positive controls.
-3. Add multi-label risk indicators and richer explanation engine.
-4. Add local encrypted event logs and optional export.
+- Gallery: `ScamHighlightOverlayView`
+- Live overlay: `OverlayManager` highlight layer
+
+### 6. Accessibility and Overlay Runtime
+
+Main service file:
+
+- `app/src/main/kotlin/com/guardian/overlay/service/GuardianAccessibilityService.kt`
+
+Key runtime policies:
+
+- Self-app exclusion to avoid recursive detections.
+- Live-scan throttling and in-flight guard.
+- Manual scan hold guard to prevent premature hide.
+- Trusted-contact CTA shown only when enabled + configured and risk criteria is met.
+
+### 7. Assistive Bubble and Panel
+
+Overlay manager file:
+
+- `app/src/main/kotlin/com/guardian/overlay/overlay/OverlayManager.kt`
+
+Capabilities:
+
+- System overlay bubble (drag/snap/remove).
+- Quick panel actions:
+  - Toggle live detection
+  - Open QR scanner
+  - Scan current screen
+  - Open app
+- Strong ON/OFF detection cue styling.
+
+### 8. Trusted Contact Technical Behavior
+
+Configuration:
+
+- Stored in `AppSettingsStore`.
+- UI controlled from `TrustedContactFragment`.
+
+Runtime action path:
+
+- Overlay CTA -> service method `openTrustedContactChooser(...)`.
+- Number normalization is applied.
+- SMS uses `smsto:` URI body handling + compatibility extras.
+- Call uses dial intent with normalized phone number.
+- Chooser mode resolves available intents and opens safest route.
+
+### 9. Settings Behavior
+
+- Immediate-apply model (no Save button).
+- Accessibility-gated toggles are reverted if permission unavailable.
+- Theme changes applied instantly.
+- Assistive-bubble sync broadcast sent on relevant toggle updates.
+
+### 10. Build, Test, and Validation
+
+Recommended commands:
+
+```powershell
+.\gradlew.bat :app:compileDebugKotlin --no-daemon
+.\gradlew.bat :app:assembleDebug --no-daemon
+```
+
+Manual validation checklist:
+
+1. Live detection ON/OFF behavior.
+2. Manual scan while live detection OFF.
+3. Self-app exclusion on app screens.
+4. Assistive panel detection cue clarity.
+5. QR scan result integrity.
+6. Gallery result dialog readability and sectioning.
+7. Trusted Contact modes: Chooser/SMS/Call/Share.
+8. Trusted Contact disabled/invalid config hides CTA.
+9. 5-tab navigation behavior after rotation.
+10. Theme parity in light/dark for overlays and cards.
+
+### 11. 16 KB Page-Size Compliance Note
+
+Google Play requires 16 KB page-size compatibility for Android 15+ submissions.
+
+Current remediation path in this project:
+
+- ML Kit dependencies were migrated to newer Play Services ML Kit artifacts.
+- Build remains successful.
+
+Recommended release verification:
+
+1. Build release artifact.
+2. Upload to Play internal testing track.
+3. Confirm no 16 KB native page-size compatibility warning is shown.
+
+### 12. Known Limitations
+
+- Rule-based detection can produce false positives/negatives on ambiguous text.
+- OCR quality varies with blur, low contrast, stylized fonts, and language mix.
+- Accessibility node text differs across apps and OS versions.
+- Secure/protected surfaces can reduce available capture detail.
+
+### 13. Extension and Improvement Path
+
+Planned/possible future enhancements:
+
+- Channel-specific rule packs by source app family.
+- Better phrase-level semantics and negation handling.
+- Labeled-data evaluation harness with precision/recall tracking.
+- Optional lightweight on-device ML model for higher correctness.
+
+### 14. Repo Reference Map
+
+- App entry and navigation:
+  - `app/src/main/kotlin/com/guardian/overlay/MainActivity.kt`
+- Runtime detection service:
+  - `app/src/main/kotlin/com/guardian/overlay/service/GuardianAccessibilityService.kt`
+- Overlay subsystem:
+  - `app/src/main/kotlin/com/guardian/overlay/overlay/OverlayManager.kt`
+- Detection subsystem:
+  - `app/src/main/kotlin/com/guardian/overlay/detection/`
+- OCR subsystem:
+  - `app/src/main/kotlin/com/guardian/overlay/ocr/OcrProcessor.kt`
+- Gallery UI and result rendering:
+  - `app/src/main/kotlin/com/guardian/overlay/ui/gallery/`
+  - `app/src/main/res/layout/dialog_gallery_scan_result.xml`
+- Trusted contact UI:
+  - `app/src/main/kotlin/com/guardian/overlay/ui/trusted/TrustedContactFragment.kt`
+
+### 15. Additional Documentation
+
+- Supplemental notes: `docs/APPENDIX.md`

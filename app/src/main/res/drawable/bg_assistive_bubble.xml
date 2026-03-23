@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <gradient
         android:angle="315"
-        android:startColor="#7E46E4"
-        android:endColor="#5C2DB9" />
-    <stroke android:width="2dp" android:color="#99DCC9FF" />
+        android:startColor="@color/assistive_bubble_start"
+        android:endColor="@color/assistive_bubble_end" />
+    <stroke android:width="2dp" android:color="@color/assistive_bubble_stroke" />
 </shape>

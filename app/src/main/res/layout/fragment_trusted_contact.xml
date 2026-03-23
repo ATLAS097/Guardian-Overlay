@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/trustedRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/trustedHeroCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_home_hero"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trusted_contact_title"
+                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/trusted_contact_subtitle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/trustedContactCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_home_card"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <Switch
+                android:id="@+id/trustedContactEnabledSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_trusted_contact_toggle" />
+
+            <EditText
+                android:id="@+id/trustedContactNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/settings_trusted_contact_name_hint"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/trustedContactNumberInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/settings_trusted_contact_number_hint"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/settings_trusted_contact_note"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/trustedActionCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_home_card"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trusted_contact_action_mode_label"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/actionModeGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/actionModeChooser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trusted_contact_mode_chooser" />
+
+            <RadioButton
+                android:id="@+id/actionModeSms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trusted_contact_mode_sms" />
+
+            <RadioButton
+                android:id="@+id/actionModeCall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trusted_contact_mode_call" />
+
+            <RadioButton
+                android:id="@+id/actionModeShare"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/trusted_contact_mode_share" />
+            </RadioGroup>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -12,8 +12,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Button
+import androidx.core.content.ContextCompat
 import com.guardian.overlay.R
 import com.guardian.overlay.model.DetectionResult
 
@@ -26,6 +28,8 @@ class OverlayManager(private val context: Context) {
     private var removeTargetParams: WindowManager.LayoutParams? = null
     private var assistivePanelView: View? = null
     private var assistivePanelDismissLayer: View? = null
+    private var trustedContactPickerView: View? = null
+    private var trustedContactPickerDismissLayer: View? = null
     private var assistiveBubbleParams: WindowManager.LayoutParams? = null
     private var snapAnimator: ValueAnimator? = null
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -33,12 +37,18 @@ class OverlayManager(private val context: Context) {
     private val autoHideRunnable = Runnable {
         hide(force = true)
     }
-    private val marginPx = (context.resources.displayMetrics.density * 12).toInt()
-    private val gapPx = (context.resources.displayMetrics.density * 12).toInt()
-    private val touchSlopPx = (context.resources.displayMetrics.density * 8).toInt()
-    private val removeTargetProximityPx = (context.resources.displayMetrics.density * 190).toInt()
+    private val marginPx = (context.resources.displayMetrics.density * EDGE_MARGIN_DP).toInt()
+    private val gapPx = (context.resources.displayMetrics.density * POPUP_GAP_DP).toInt()
+    private val touchSlopPx = (context.resources.displayMetrics.density * TOUCH_SLOP_DP).toInt()
+    private val removeTargetProximityPx = (context.resources.displayMetrics.density * REMOVE_TARGET_PROXIMITY_DP).toInt()
 
-    fun show(result: DetectionResult, visualData: OverlayVisualData? = null, holdDurationMs: Long = 12000L) {
+    fun show(
+        result: DetectionResult,
+        visualData: OverlayVisualData? = null,
+        holdDurationMs: Long = 12000L,
+        showTrustedContactAction: Boolean = false,
+        onContactTrustedPerson: (() -> Unit)? = null
+    ) {
         val view = overlayView ?: createView().also { created ->
             val params = WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -55,13 +65,24 @@ class OverlayManager(private val context: Context) {
             overlayView = created
         }
 
-        popupHoldUntilMs = System.currentTimeMillis() + holdDurationMs.coerceAtLeast(1000L)
+        popupHoldUntilMs = System.currentTimeMillis() + holdDurationMs.coerceAtLeast(MIN_HOLD_DURATION_MS)
         mainHandler.removeCallbacks(autoHideRunnable)
-        mainHandler.postDelayed(autoHideRunnable, holdDurationMs.coerceAtLeast(1000L))
+        mainHandler.postDelayed(autoHideRunnable, holdDurationMs.coerceAtLeast(MIN_HOLD_DURATION_MS))
 
         view.findViewById<TextView>(R.id.overlayScore).text = "Risk: ${result.prettyScore()}"
         view.findViewById<TextView>(R.id.overlayReasons).text = result.reasons.joinToString(separator = "\n• ", prefix = "• ")
         val highlightSummary = view.findViewById<TextView>(R.id.overlayHighlightSummary)
+        val contactTrustedBtn = view.findViewById<Button>(R.id.overlayContactTrusted)
+
+        if (showTrustedContactAction && onContactTrustedPerson != null) {
+            contactTrustedBtn.visibility = View.VISIBLE
+            contactTrustedBtn.setOnClickListener {
+                onContactTrustedPerson()
+            }
+        } else {
+            contactTrustedBtn.visibility = View.GONE
+            contactTrustedBtn.setOnClickListener(null)
+        }
 
         clearLiveHighlightBox()
         val mostNotable = visualData?.boxes
@@ -86,6 +107,7 @@ class OverlayManager(private val context: Context) {
 
         mainHandler.removeCallbacks(autoHideRunnable)
         popupHoldUntilMs = 0L
+        hideTrustedContactPicker()
         clearLiveHighlightBox()
         overlayView?.let {
             windowManager.removeView(it)
@@ -108,7 +130,7 @@ class OverlayManager(private val context: Context) {
         val screenH = displayMetrics.heightPixels
 
         val bubbleView = LayoutInflater.from(context).inflate(R.layout.overlay_assistive_bubble, null)
-        val bubbleSize = (56 * displayMetrics.density).toInt()
+        val bubbleSize = (BUBBLE_SIZE_DP * displayMetrics.density).toInt()
 
         val bubbleParams = WindowManager.LayoutParams(
             bubbleSize,
@@ -142,7 +164,7 @@ class OverlayManager(private val context: Context) {
                     snapAnimator?.cancel()
                     hideAssistivePanel()
                     showRemoveTarget()
-                    bubbleView.animate().scaleX(0.94f).scaleY(0.94f).setDuration(90).start()
+                    bubbleView.animate().scaleX(BUBBLE_DOWN_SCALE).scaleY(BUBBLE_DOWN_SCALE).setDuration(BUBBLE_PRESS_DURATION_MS).start()
                     true
                 }
 
@@ -170,7 +192,7 @@ class OverlayManager(private val context: Context) {
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     val shouldRemove = isBubbleOverRemoveTarget(bubbleParams)
                     hideRemoveTarget()
-                    bubbleView.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
+                    bubbleView.animate().scaleX(1f).scaleY(1f).setDuration(BUBBLE_RELEASE_DURATION_MS).start()
 
                     if (didDrag) {
                         if (shouldRemove) {
@@ -181,7 +203,7 @@ class OverlayManager(private val context: Context) {
                         }
                     } else {
                         val pressDuration = System.currentTimeMillis() - downTs
-                        if (pressDuration < 550L) {
+                        if (pressDuration < CLICK_MAX_PRESS_DURATION_MS) {
                             toggleAssistivePanel(
                                 isDetectionEnabled = isDetectionEnabled,
                                 onToggleDetection = onToggleDetection,
@@ -205,6 +227,7 @@ class OverlayManager(private val context: Context) {
     fun hideAssistiveBubble() {
         snapAnimator?.cancel()
         hideAssistivePanel()
+        hideTrustedContactPicker()
         hideRemoveTarget()
         assistiveBubbleView?.let {
             windowManager.removeView(it)
@@ -359,7 +382,7 @@ class OverlayManager(private val context: Context) {
 
         snapAnimator?.cancel()
         snapAnimator = ValueAnimator.ofInt(params.x, targetX).apply {
-            duration = 560
+            duration = BUBBLE_SNAP_DURATION_MS
             interpolator = DecelerateInterpolator()
             addUpdateListener { animator ->
                 params.x = animator.animatedValue as Int
@@ -373,7 +396,7 @@ class OverlayManager(private val context: Context) {
         if (removeTargetView != null) return
 
         val targetView = LayoutInflater.from(context).inflate(R.layout.overlay_assistive_remove_target, null)
-        val targetSize = (64 * context.resources.displayMetrics.density).toInt()
+        val targetSize = (REMOVE_TARGET_SIZE_DP * context.resources.displayMetrics.density).toInt()
         val screenW = context.resources.displayMetrics.widthPixels
         val screenH = context.resources.displayMetrics.heightPixels
 
@@ -412,13 +435,13 @@ class OverlayManager(private val context: Context) {
 
         val targetAlpha = when {
             overTarget -> 1f
-            nearTarget || bottomZone -> 0.86f
+            nearTarget || bottomZone -> REMOVE_TARGET_NEAR_ALPHA
             else -> 0f
         }
 
         if (targetAlpha == 0f) {
             if (target.visibility == View.VISIBLE) {
-                target.animate().alpha(0f).setDuration(120).withEndAction {
+                target.animate().alpha(0f).setDuration(REMOVE_TARGET_FADE_DURATION_MS).withEndAction {
                     target.visibility = View.INVISIBLE
                 }.start()
             }
@@ -427,7 +450,7 @@ class OverlayManager(private val context: Context) {
                 target.visibility = View.VISIBLE
                 target.alpha = 0f
             }
-            target.animate().alpha(targetAlpha).setDuration(120).start()
+            target.animate().alpha(targetAlpha).setDuration(REMOVE_TARGET_FADE_DURATION_MS).start()
         }
     }
 
@@ -449,7 +472,7 @@ class OverlayManager(private val context: Context) {
     private fun isBubbleInBottomTriggerZone(bubbleParams: WindowManager.LayoutParams): Boolean {
         val screenH = context.resources.displayMetrics.heightPixels
         val bubbleCy = bubbleParams.y + bubbleParams.height / 2
-        return bubbleCy >= (screenH * 0.72f).toInt()
+        return bubbleCy >= (screenH * REMOVE_TARGET_BOTTOM_TRIGGER_RATIO).toInt()
     }
 
     private fun isBubbleOverRemoveTarget(bubbleParams: WindowManager.LayoutParams): Boolean {
@@ -483,42 +506,62 @@ class OverlayManager(private val context: Context) {
             return
         }
 
-        val bubbleParams = assistiveBubbleParams ?: return
         val bubbleView = assistiveBubbleView ?: return
+        val bubbleParams = assistiveBubbleParams ?: return
 
         val panelView = LayoutInflater.from(context).inflate(R.layout.overlay_assistive_panel, null)
-        val toggleBtn = panelView.findViewById<Button>(R.id.toggleDetectionBtn)
-        val openQrBtn = panelView.findViewById<Button>(R.id.openQrBtn)
-        val checkScreenBtn = panelView.findViewById<Button>(R.id.checkScreenBtn)
-        val openAppBtn = panelView.findViewById<Button>(R.id.openAppBtn)
+        val toggleAction = panelView.findViewById<View>(R.id.toggleDetectionBtn)
+        val openQrAction = panelView.findViewById<View>(R.id.openQrBtn)
+        val checkScreenAction = panelView.findViewById<View>(R.id.checkScreenBtn)
+        val openAppAction = panelView.findViewById<View>(R.id.openAppBtn)
+        val toggleLabel = panelView.findViewById<TextView>(R.id.toggleDetectionLabel)
+        val toggleState = panelView.findViewById<TextView>(R.id.toggleDetectionState)
+        val toggleIcon = panelView.findViewById<ImageView>(R.id.toggleDetectionIcon)
 
-        fun refreshToggleText() {
-            val textRes = if (isDetectionEnabled()) {
-                R.string.assistive_toggle_detection_off
+        fun refreshToggleLabel() {
+            val enabled = isDetectionEnabled()
+            toggleLabel.text = context.getString(R.string.assistive_action_detection_title)
+
+            if (enabled) {
+                toggleAction.setBackgroundResource(R.drawable.bg_assistive_toggle_on)
+                toggleState.setBackgroundResource(R.drawable.bg_assistive_toggle_on)
+                toggleState.text = context.getString(R.string.assistive_detection_state_on)
+                toggleState.setTextColor(ContextCompat.getColor(context, R.color.assistive_detection_on_text))
+                toggleIcon.setImageResource(android.R.drawable.ic_media_pause)
             } else {
-                R.string.assistive_toggle_detection_on
+                toggleAction.setBackgroundResource(R.drawable.bg_assistive_toggle_off)
+                toggleState.setBackgroundResource(R.drawable.bg_assistive_toggle_off)
+                toggleState.text = context.getString(R.string.assistive_detection_state_off)
+                toggleState.setTextColor(ContextCompat.getColor(context, R.color.assistive_detection_off_text))
+                toggleIcon.setImageResource(android.R.drawable.ic_media_play)
             }
-            toggleBtn.text = context.getString(textRes)
+
+            val iconTintRes = if (enabled) {
+                R.color.assistive_detection_on_text
+            } else {
+                R.color.assistive_detection_off_text
+            }
+            toggleIcon.setColorFilter(ContextCompat.getColor(context, iconTintRes))
         }
 
-        refreshToggleText()
+        refreshToggleLabel()
 
-        toggleBtn.setOnClickListener {
+        toggleAction.setOnClickListener {
             onToggleDetection()
-            refreshToggleText()
+            refreshToggleLabel()
         }
 
-        openQrBtn.setOnClickListener {
+        openQrAction.setOnClickListener {
             onOpenQr()
             hideAssistivePanel()
         }
 
-        checkScreenBtn.setOnClickListener {
+        checkScreenAction.setOnClickListener {
             onCheckCurrentScreen()
             hideAssistivePanel()
         }
 
-        openAppBtn.setOnClickListener {
+        openAppAction.setOnClickListener {
             onOpenApp()
             hideAssistivePanel()
         }
@@ -526,27 +569,15 @@ class OverlayManager(private val context: Context) {
         val displayMetrics = context.resources.displayMetrics
         val screenW = displayMetrics.widthPixels
         val screenH = displayMetrics.heightPixels
-        val maxWidth = (screenW * 0.62f).toInt().coerceAtLeast(180)
+        val maxWidth = (screenW * PANEL_MAX_WIDTH_RATIO).toInt().coerceAtLeast(PANEL_MIN_WIDTH_PX)
         val widthSpec = View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.AT_MOST)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(screenH, View.MeasureSpec.AT_MOST)
         panelView.measure(widthSpec, heightSpec)
-        val panelW = panelView.measuredWidth.coerceAtLeast(180)
-        val panelH = panelView.measuredHeight.coerceAtLeast(120)
+        val panelW = panelView.measuredWidth.coerceAtLeast(PANEL_MIN_WIDTH_PX)
+        val panelH = panelView.measuredHeight.coerceAtLeast(PANEL_MIN_HEIGHT_PX)
 
-        val bubbleRect = Rect(
-            bubbleParams.x,
-            bubbleParams.y,
-            bubbleParams.x + bubbleParams.width,
-            bubbleParams.y + bubbleParams.height
-        )
-
-        val panelX = if (bubbleRect.centerX() < screenW / 2) {
-            (bubbleRect.right + gapPx).coerceAtMost(screenW - panelW - marginPx)
-        } else {
-            (bubbleRect.left - gapPx - panelW).coerceAtLeast(marginPx)
-        }
-        val panelY = (bubbleRect.centerY() - panelH / 2)
-            .coerceIn(marginPx, (screenH - panelH - marginPx).coerceAtLeast(marginPx))
+        val panelX = ((screenW - panelW) / 2).coerceAtLeast(marginPx)
+        val panelY = ((screenH - panelH) / 2).coerceAtLeast(marginPx)
 
         val panelParams = WindowManager.LayoutParams(
             panelW,
@@ -582,23 +613,146 @@ class OverlayManager(private val context: Context) {
 
         windowManager.addView(panelView, panelParams)
         panelView.alpha = 0f
-        panelView.translationY = 16f
-        panelView.animate().alpha(1f).translationY(0f).setDuration(180).setInterpolator(DecelerateInterpolator()).start()
+        panelView.translationY = PANEL_ENTER_TRANSLATION_Y
+        panelView.scaleX = PANEL_ENTER_SCALE
+        panelView.scaleY = PANEL_ENTER_SCALE
+        panelView.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(PANEL_ENTER_DURATION_MS)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
         assistivePanelView = panelView
 
         // Keep bubble above panel for better perceived responsiveness.
         windowManager.updateViewLayout(bubbleView, bubbleParams)
     }
 
+    fun showTrustedContactPicker(
+        onSms: () -> Unit,
+        onCall: () -> Unit,
+        onShare: () -> Unit
+    ) {
+        if (trustedContactPickerView != null) return
+
+        hideAssistivePanel()
+
+        val pickerView = LayoutInflater.from(context).inflate(R.layout.overlay_trusted_contact_picker, null)
+        val smsAction = pickerView.findViewById<View>(R.id.trustedPickerSmsBtn)
+        val callAction = pickerView.findViewById<View>(R.id.trustedPickerCallBtn)
+        val shareAction = pickerView.findViewById<View>(R.id.trustedPickerShareBtn)
+        val cancelAction = pickerView.findViewById<Button>(R.id.trustedPickerCancelBtn)
+
+        fun consume(action: () -> Unit) {
+            action()
+            hideTrustedContactPicker()
+        }
+
+        smsAction.setOnClickListener { consume(onSms) }
+        callAction.setOnClickListener { consume(onCall) }
+        shareAction.setOnClickListener { consume(onShare) }
+        cancelAction.setOnClickListener { hideTrustedContactPicker() }
+
+        val displayMetrics = context.resources.displayMetrics
+        val screenW = displayMetrics.widthPixels
+        val screenH = displayMetrics.heightPixels
+        val maxWidth = (screenW * PANEL_MAX_WIDTH_RATIO).toInt().coerceAtLeast(PANEL_MIN_WIDTH_PX)
+        val widthSpec = View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.AT_MOST)
+        val heightSpec = View.MeasureSpec.makeMeasureSpec(screenH, View.MeasureSpec.AT_MOST)
+        pickerView.measure(widthSpec, heightSpec)
+        val pickerW = pickerView.measuredWidth.coerceAtLeast(PANEL_MIN_WIDTH_PX)
+        val pickerH = pickerView.measuredHeight.coerceAtLeast(PANEL_MIN_HEIGHT_PX)
+
+        val pickerParams = WindowManager.LayoutParams(
+            pickerW,
+            WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.TOP or Gravity.START
+            x = ((screenW - pickerW) / 2).coerceAtLeast(marginPx)
+            y = ((screenH - pickerH) / 2).coerceAtLeast(marginPx)
+        }
+
+        val dismissLayer = View(context)
+        val dismissLayerParams = WindowManager.LayoutParams(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            PixelFormat.TRANSLUCENT
+        ).apply {
+            gravity = Gravity.TOP or Gravity.START
+            x = 0
+            y = 0
+        }
+        dismissLayer.setOnTouchListener { _, _ ->
+            hideTrustedContactPicker()
+            true
+        }
+
+        windowManager.addView(dismissLayer, dismissLayerParams)
+        trustedContactPickerDismissLayer = dismissLayer
+
+        windowManager.addView(pickerView, pickerParams)
+        pickerView.alpha = 0f
+        pickerView.translationY = PANEL_ENTER_TRANSLATION_Y
+        pickerView.scaleX = PANEL_ENTER_SCALE
+        pickerView.scaleY = PANEL_ENTER_SCALE
+        pickerView.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(PANEL_ENTER_DURATION_MS)
+            .setInterpolator(DecelerateInterpolator())
+            .start()
+        trustedContactPickerView = pickerView
+    }
+
+    fun hideTrustedContactPicker() {
+        trustedContactPickerView?.let {
+            val panel = it
+            panel.animate()
+                .alpha(0f)
+                .translationY(PANEL_EXIT_TRANSLATION_Y)
+                .scaleX(PANEL_EXIT_SCALE)
+                .scaleY(PANEL_EXIT_SCALE)
+                .setDuration(PANEL_EXIT_DURATION_MS)
+                .withEndAction {
+                    runCatching { windowManager.removeView(panel) }
+                    if (trustedContactPickerView === panel) {
+                        trustedContactPickerView = null
+                    }
+                }
+                .start()
+        }
+
+        trustedContactPickerDismissLayer?.let {
+            runCatching { windowManager.removeView(it) }
+            trustedContactPickerDismissLayer = null
+        }
+    }
+
     private fun hideAssistivePanel() {
         assistivePanelView?.let {
             val panel = it
-            panel.animate().alpha(0f).translationY(12f).setDuration(130).withEndAction {
-                runCatching { windowManager.removeView(panel) }
-                if (assistivePanelView === panel) {
-                    assistivePanelView = null
+            panel.animate()
+                .alpha(0f)
+                .translationY(PANEL_EXIT_TRANSLATION_Y)
+                .scaleX(PANEL_EXIT_SCALE)
+                .scaleY(PANEL_EXIT_SCALE)
+                .setDuration(PANEL_EXIT_DURATION_MS)
+                .withEndAction {
+                    runCatching { windowManager.removeView(panel) }
+                    if (assistivePanelView === panel) {
+                        assistivePanelView = null
+                    }
                 }
-            }.start()
+                .start()
         }
         assistivePanelDismissLayer?.let {
             runCatching { windowManager.removeView(it) }
@@ -609,9 +763,39 @@ class OverlayManager(private val context: Context) {
     private fun createView(): View {
         val view = LayoutInflater.from(context).inflate(R.layout.overlay_warning, null)
         view.findViewById<Button>(R.id.overlayDismiss).setOnClickListener {
+            hideTrustedContactPicker()
             hide(force = true)
         }
         return view
+    }
+
+    companion object {
+        private const val EDGE_MARGIN_DP = 12f
+        private const val POPUP_GAP_DP = 12f
+        private const val TOUCH_SLOP_DP = 8f
+        private const val REMOVE_TARGET_PROXIMITY_DP = 190f
+        private const val BUBBLE_SIZE_DP = 56
+        private const val REMOVE_TARGET_SIZE_DP = 64
+
+        private const val MIN_HOLD_DURATION_MS = 1000L
+        private const val CLICK_MAX_PRESS_DURATION_MS = 550L
+        private const val BUBBLE_PRESS_DURATION_MS = 90L
+        private const val BUBBLE_RELEASE_DURATION_MS = 120L
+        private const val BUBBLE_SNAP_DURATION_MS = 560L
+        private const val REMOVE_TARGET_FADE_DURATION_MS = 120L
+        private const val PANEL_ENTER_DURATION_MS = 180L
+        private const val PANEL_EXIT_DURATION_MS = 130L
+
+        private const val REMOVE_TARGET_NEAR_ALPHA = 0.86f
+        private const val REMOVE_TARGET_BOTTOM_TRIGGER_RATIO = 0.72f
+        private const val PANEL_MAX_WIDTH_RATIO = 0.62f
+        private const val PANEL_MIN_WIDTH_PX = 180
+        private const val PANEL_MIN_HEIGHT_PX = 120
+        private const val PANEL_ENTER_TRANSLATION_Y = 10f
+        private const val PANEL_EXIT_TRANSLATION_Y = 12f
+        private const val PANEL_ENTER_SCALE = 0.94f
+        private const val PANEL_EXIT_SCALE = 0.96f
+        private const val BUBBLE_DOWN_SCALE = 0.94f
     }
 }
 

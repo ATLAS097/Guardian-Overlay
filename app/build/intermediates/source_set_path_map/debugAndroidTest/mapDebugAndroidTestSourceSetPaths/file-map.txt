@@ -1,6 +1,0 @@
-com.guardian.overlay.test.app-androidTest-0 C:\Coding\Projects\Guardian-Overlay\app\build\generated\res\resValues\androidTest\debug
-com.guardian.overlay.test.app-updated_navigation_xml-1 C:\Coding\Projects\Guardian-Overlay\app\build\generated\updated_navigation_xml\debugAndroidTest
-com.guardian.overlay.test.app-mergeDebugAndroidTestResources-2 C:\Coding\Projects\Guardian-Overlay\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
-com.guardian.overlay.test.app-mergeDebugAndroidTestResources-3 C:\Coding\Projects\Guardian-Overlay\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
-com.guardian.overlay.test.app-debugAndroidTest-4 C:\Coding\Projects\Guardian-Overlay\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
-com.guardian.overlay.test.app-core-1.6.1-5 C:\Users\kaung\.gradle\caches\9.0.0\transforms\7b28f5a01c6943b83ab62b6f41ebeb06\transformed\core-1.6.1\res

@@ -13,6 +13,6 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/assistive_remove_target_desc"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:tint="@color/white" />
+        android:tint="@color/assistive_remove_icon_tint" />
 
 </FrameLayout>

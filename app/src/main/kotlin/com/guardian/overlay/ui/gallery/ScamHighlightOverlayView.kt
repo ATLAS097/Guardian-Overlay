@@ -28,11 +28,22 @@ class ScamHighlightOverlayView @JvmOverloads constructor(
     private var sourceWidth: Int = 1
     private var sourceHeight: Int = 1
     private var boxes: List<Rect> = emptyList()
+    private var isScamVerdict: Boolean = true
 
-    fun setHighlightData(sourceWidth: Int, sourceHeight: Int, boxes: List<Rect>) {
+    fun setHighlightData(sourceWidth: Int, sourceHeight: Int, boxes: List<Rect>, isScam: Boolean = true) {
         this.sourceWidth = sourceWidth.coerceAtLeast(1)
         this.sourceHeight = sourceHeight.coerceAtLeast(1)
         this.boxes = boxes
+        this.isScamVerdict = isScam
+
+        if (isScamVerdict) {
+            strokePaint.color = ContextCompat.getColor(context, R.color.highlight_box_stroke)
+            fillPaint.color = ContextCompat.getColor(context, R.color.highlight_box_fill)
+        } else {
+            strokePaint.color = ContextCompat.getColor(context, R.color.highlight_box_safe_stroke)
+            fillPaint.color = ContextCompat.getColor(context, R.color.highlight_box_safe_fill)
+        }
+
         invalidate()
     }
 

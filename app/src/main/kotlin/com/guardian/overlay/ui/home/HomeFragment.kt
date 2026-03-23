@@ -15,6 +15,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentHomeBinding.bind(view)
         renderStatus()
+        playEntranceAnimation()
     }
 
     override fun onResume() {
@@ -53,5 +54,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             onlineLookup,
             assistiveTouch
         )
+    }
+
+    private fun playEntranceAnimation() {
+        val cards = listOf(binding.homeHeroCard, binding.homeStatusCard, binding.homePreventionCard)
+        cards.forEachIndexed { index, card ->
+            card.alpha = 0f
+            card.translationY = 22f
+            card.animate()
+                .alpha(1f)
+                .translationY(0f)
+                .setStartDelay(index * 70L)
+                .setDuration(260)
+                .start()
+        }
     }
 }

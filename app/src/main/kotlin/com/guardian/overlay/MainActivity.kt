@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         when (tab) {
             TAB_QR -> binding.bottomNav.selectedItemId = R.id.qrScannerFragment
             TAB_GALLERY -> binding.bottomNav.selectedItemId = R.id.galleryFragment
+            TAB_TRUSTED_CONTACT -> binding.bottomNav.selectedItemId = R.id.trustedContactFragment
             TAB_HOME -> binding.bottomNav.selectedItemId = R.id.homeFragment
             TAB_SETTINGS -> binding.bottomNav.selectedItemId = R.id.settingsFragment
         }
@@ -69,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         const val TAB_HOME = "home"
         const val TAB_QR = "qr"
         const val TAB_GALLERY = "gallery"
+        const val TAB_TRUSTED_CONTACT = "trusted_contact"
         const val TAB_SETTINGS = "settings"
     }
 }

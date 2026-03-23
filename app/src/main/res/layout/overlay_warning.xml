@@ -12,7 +12,7 @@
         android:id="@+id/overlayTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scam Risk Detected"
+        android:text="@string/overlay_title"
         android:textColor="@color/overlay_title_color"
         android:textStyle="bold" />
 
@@ -44,6 +44,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Dismiss" />
+        android:text="@string/overlay_dismiss" />
+
+    <Button
+        android:id="@+id/overlayContactTrusted"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/overlay_contact_trusted"
+        android:visibility="gone" />
 
 </LinearLayout>

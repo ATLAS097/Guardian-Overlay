@@ -89,12 +89,5 @@
                 android:text="@string/theme_dark" />
         </RadioGroup>
 
-        <Button
-            android:id="@+id/saveSettingsBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/save_settings" />
-
     </LinearLayout>
 </ScrollView>

@@ -12,3 +12,16 @@
 /captures
 .externalNativeBuild
 .cxx
+# Android build folders
+/build/
+/app/build/
+
+# Gradle
+.gradle/
+
+# Local config
+local.properties
+
+# Generated files
+*.log
+*.apk

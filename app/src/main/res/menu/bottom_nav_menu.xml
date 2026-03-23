@@ -13,6 +13,10 @@
         android:icon="@android:drawable/ic_menu_gallery"
         android:title="@string/tab_gallery" />
     <item
+        android:id="@+id/trustedContactFragment"
+        android:icon="@android:drawable/ic_menu_call"
+        android:title="@string/tab_trusted_contact" />
+    <item
         android:id="@+id/settingsFragment"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/tab_settings" />

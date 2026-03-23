@@ -40,10 +40,16 @@ class OcrProcessor {
         recognizer.process(image)
             .addOnSuccessListener { result ->
                 val lines = result.textBlocks
-                    .flatMap { block -> block.lines }
-                    .mapNotNull { line ->
-                        val box = line.boundingBox ?: return@mapNotNull null
-                        OcrLineBox(text = line.text, bounds = Rect(box))
+                    .flatMap { block ->
+                        val blockBox = block.boundingBox?.let { Rect(it) }
+                        block.lines.mapNotNull { line ->
+                            val lineBox = line.boundingBox ?: return@mapNotNull null
+                            OcrLineBox(
+                                text = line.text,
+                                bounds = Rect(lineBox),
+                                blockBounds = blockBox?.let { Rect(it) }
+                            )
+                        }
                     }
                 onSuccess(OcrScanData(text = result.text, lines = lines))
             }
@@ -62,10 +68,16 @@ class OcrProcessor {
         recognizer.process(image)
             .addOnSuccessListener { result ->
                 val lines = result.textBlocks
-                    .flatMap { block -> block.lines }
-                    .mapNotNull { line ->
-                        val box = line.boundingBox ?: return@mapNotNull null
-                        OcrLineBox(text = line.text, bounds = Rect(box))
+                    .flatMap { block ->
+                        val blockBox = block.boundingBox?.let { Rect(it) }
+                        block.lines.mapNotNull { line ->
+                            val lineBox = line.boundingBox ?: return@mapNotNull null
+                            OcrLineBox(
+                                text = line.text,
+                                bounds = Rect(lineBox),
+                                blockBounds = blockBox?.let { Rect(it) }
+                            )
+                        }
                     }
                 onSuccess(OcrScanData(text = result.text, lines = lines))
             }
@@ -82,5 +94,6 @@ data class OcrScanData(
 
 data class OcrLineBox(
     val text: String,
-    val bounds: Rect
+    val bounds: Rect,
+    val blockBounds: Rect? = null
 )
